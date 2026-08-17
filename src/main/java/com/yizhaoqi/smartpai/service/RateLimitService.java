@@ -98,6 +98,11 @@ public class RateLimitService {
     }
 
     public UsageQuotaService.TokenReservationBundle reserveEmbeddingUploadUsage(String userId, java.util.List<String> texts) {
+        if (inMemory) {
+            // The portfolio knowledge base is seeded once during startup and persisted in Neon.
+            // It must not require Redis or consume the visitor-facing daily token budget.
+            return UsageQuotaService.TokenReservationBundle.noop("embedding-upload", userId);
+        }
         RateLimitConfigService.TokenBudgetView limit = rateLimitConfigService.getCurrentSettings().embeddingUploadToken();
         return usageQuotaService.reserveEmbeddingTokensWithGlobalBudget(
                 userId,
