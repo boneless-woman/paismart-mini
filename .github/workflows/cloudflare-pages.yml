@@ -1,0 +1,39 @@
+name: Deploy portfolio frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/cloudflare-pages.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      VITE_SERVICE_BASE_URL: ${{ secrets.DEMO_API_URL }}/api/v1
+      VITE_OTHER_SERVICE_BASE_URL: '{"api":"${{ secrets.DEMO_API_URL }}/api/v1","ws":"${{ secrets.DEMO_WS_URL }}"}'
+      VITE_DEMO_USERNAME: ${{ vars.DEMO_USERNAME }}
+      VITE_DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:portfolio
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend/dist --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }}

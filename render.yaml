@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: paismart-portfolio-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.portfolio
+    healthCheckPath: /api/v1/demo/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: portfolio-demo
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: PORTFOLIO_DEMO_USERNAME
+        value: demo_user
+      - key: PORTFOLIO_DEMO_PASSWORD
+        sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: EMBEDDING_API_KEY
+        sync: false
+      - key: SECURITY_ALLOWED_ORIGINS
+        sync: false
+      - key: PORTFOLIO_DEMO_DAILY_REQUESTS
+        value: 100
+      - key: PORTFOLIO_DEMO_PER_MINUTE
+        value: 6
+      - key: PORTFOLIO_DEMO_DAILY_TOKEN_LIMIT
+        value: 100000

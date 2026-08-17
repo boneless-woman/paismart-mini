@@ -1,0 +1,83 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 4
+      minimum-idle: 0
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+  kafka:
+    listener:
+      auto-startup: false
+
+portfolio:
+  demo:
+    enabled: true
+    username: ${PORTFOLIO_DEMO_USERNAME:demo_user}
+    password: ${PORTFOLIO_DEMO_PASSWORD}
+    max-question-length: ${PORTFOLIO_DEMO_MAX_QUESTION_LENGTH:500}
+    per-minute: ${PORTFOLIO_DEMO_PER_MINUTE:6}
+    daily-requests: ${PORTFOLIO_DEMO_DAILY_REQUESTS:100}
+    daily-token-limit: ${PORTFOLIO_DEMO_DAILY_TOKEN_LIMIT:60000}
+
+app:
+  auth:
+    registration:
+      mode: CLOSED
+      invite-required: true
+
+admin:
+  bootstrap:
+    enabled: false
+
+knowledge:
+  bootstrap:
+    enabled: false
+
+embedding:
+  api:
+    url: ${EMBEDDING_API_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
+    key: ${EMBEDDING_API_KEY}
+    model: ${EMBEDDING_API_MODEL:text-embedding-v4}
+    batch-size: 10
+    dimension: 1024
+
+deepseek:
+  api:
+    url: ${DEEPSEEK_API_URL:https://api.deepseek.com/v1}
+    model: ${DEEPSEEK_API_MODEL:deepseek-chat}
+    key: ${DEEPSEEK_API_KEY}
+
+ai:
+  generation:
+    max-tokens: ${PORTFOLIO_DEMO_MAX_COMPLETION_TOKENS:800}
+    temperature: 0.3
+    top-p: 0.9
+
+usage-quota:
+  use-user-token-balance: false
+  llm:
+    enabled: false
+  embedding:
+    enabled: false
+
+security:
+  allowed-origins: ${SECURITY_ALLOWED_ORIGINS:https://*.pages.dev,http://localhost:*}
+
+logging:
+  level:
+    root: INFO
+    com.yizhaoqi.smartpai: INFO
