@@ -14,4 +14,4 @@ RUN mkdir -p /app/logs && chown -R appuser:appuser /app
 USER appuser
 ENV SPRING_PROFILES_ACTIVE=portfolio-demo
 EXPOSE 8081
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Xms64m", "-Xmx256m", "-Xss512k", "-XX:MaxMetaspaceSize=128m", "-XX:ReservedCodeCacheSize=64m", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]
