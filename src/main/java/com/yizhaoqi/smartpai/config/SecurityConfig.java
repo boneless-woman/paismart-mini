@@ -11,6 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 配置Spring Security的类
@@ -19,6 +26,9 @@ import org.springframework.beans.factory.ObjectProvider;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${security.allowed-origins:http://localhost:*}")
+    private String allowedOrigins;
 
     // 日志记录器，用于记录安全配置的相关信息
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
@@ -45,6 +55,7 @@ public class SecurityConfig {
         try {
             // 禁用CSRF保护
             http.csrf(csrf -> csrf.disable())
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                     // 配置请求的授权规则
                     .authorizeHttpRequests(authorize -> authorize
                             // 允许静态资源访问
@@ -102,5 +113,22 @@ public class SecurityConfig {
             // 抛出异常，以便外部处理
             throw e;
         }
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isEmpty())
+                .toList());
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

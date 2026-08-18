@@ -25,7 +25,7 @@ services:
       - key: EMBEDDING_API_KEY
         sync: false
       - key: SECURITY_ALLOWED_ORIGINS
-        sync: false
+        value: https://paismart-mini.pages.dev
       - key: PORTFOLIO_DEMO_DAILY_REQUESTS
         value: 100
       - key: PORTFOLIO_DEMO_PER_MINUTE

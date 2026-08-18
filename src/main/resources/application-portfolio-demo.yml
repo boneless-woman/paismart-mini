@@ -77,7 +77,7 @@ usage-quota:
     enabled: false
 
 security:
-  allowed-origins: ${SECURITY_ALLOWED_ORIGINS:https://*.pages.dev,http://localhost:*}
+  allowed-origins: ${SECURITY_ALLOWED_ORIGINS:https://paismart-mini.pages.dev}
 
 logging:
   level:
