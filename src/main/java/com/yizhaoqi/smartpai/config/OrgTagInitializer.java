@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 组织标签初始化器
  * 在应用启动时自动创建默认组织标签（如果不存在）
  */
 @Component
+@Profile("!portfolio-demo")
 @Order(2) // 设置优先级，确保在管理员账号初始化器之后运行
 public class OrgTagInitializer implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(OrgTagInitializer.class);

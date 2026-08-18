@@ -56,6 +56,9 @@ public class ModelProviderConfigService {
     @Value("${embedding.api.dimension:2048}")
     private Integer embeddingDimension;
 
+    @Value("${portfolio.demo.enabled:false}")
+    private boolean portfolioDemo;
+
     public ModelProviderConfigService(ModelProviderConfigRepository repository, SecretCryptoService secretCryptoService) {
         this.repository = repository;
         this.secretCryptoService = secretCryptoService;
@@ -64,7 +67,11 @@ public class ModelProviderConfigService {
 
     @PostConstruct
     public void loadPersistedConfigs() {
-        reloadSettings();
+        if (portfolioDemo) {
+            this.currentSettings = buildDefaultSettings();
+        } else {
+            reloadSettings();
+        }
     }
 
     public ModelProviderSettingsView getCurrentSettings() {
